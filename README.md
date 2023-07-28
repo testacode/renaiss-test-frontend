@@ -1,28 +1,27 @@
-# Renaiss Frontend Test
+# React + TypeScript + Vite
 
-You are going to need -> [Figma](https://www.figma.com/file/dTbo3PXPG1rWqeKwp6QZky/Prueba-T%C3%A9cnica?type=design&node-id=0-1&t=3hR3HQvhObuQq7n8-0)
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-The following chat should be developed with integration to the [Open AI API](https://platform.openai.com/docs/introduction).
+Currently, two official plugins are available:
 
-The development can be done using the React framework or library that the candidate prefers (NextJS, Vite, etc). The use of Typescript is mandatory.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-The application must have a specific section to configure the system indicator for Open AI and the model must respond according to the configuration of said indicator.
+## Expanding the ESLint configuration
 
-In addition to the section mentioned above, there should be an area for the chat history. Each history should have as its title the first message that is sent through the chat. Clicking on such a history should retrieve all the messages it contains.
+If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
 
-### Chat restrictions:
+- Configure the top-level `parserOptions` property like this:
 
-- A maximum of 1000 tokens is allowed. As the user types their message, it will show how many tokens they have left.
-- You need to select a search or create a new one to start using the chat.
-- The chat must adapt the content sent and structure it accordingly. For example, if the chat sends me an image or a piece of code, the chat must be prepared to display that content in the correct way.
+```js
+   parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    project: ['./tsconfig.json', './tsconfig.node.json'],
+    tsconfigRootDir: __dirname,
+   },
+```
 
-### Topics to evaluate:
-
-- Converting the Figma layout to code.
-- Responsive design.
-- Status management.
-- Asynchronous programming.
-- Implementation of SOLID principles.
-- Architecture and structure of the project.
-
-The project must be deployed on the platform such as [Vercel](https://vercel.com/) or [Netlify](https://www.netlify.com/)
+- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
+- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
+- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
