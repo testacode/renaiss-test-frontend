@@ -5,6 +5,7 @@ import {
   Button,
   Card,
   CardBody,
+  chakra,
   Circle,
   Divider,
   Flex,
@@ -12,14 +13,29 @@ import {
   Icon,
   IconButton,
   Text,
+  useBoolean,
 } from "@chakra-ui/react";
+import { useForm } from "react-hook-form";
 import { FiSearch } from "react-icons/fi";
 import { PiClockCountdownLight, PiTrashSimple } from "react-icons/pi";
 
+import { fakePromise } from "../utils";
 import { InputPrompt } from ".";
 
 const Sidebar = ({ config, ...rest }) => {
   const { mobile } = config;
+  const [isLoading, setIsLoading] = useBoolean();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    setIsLoading.on();
+    await fakePromise(data);
+    setIsLoading.off();
+  };
 
   return (
     <Box
@@ -46,7 +62,19 @@ const Sidebar = ({ config, ...rest }) => {
               Para conseguir una respuesta adecuada a tus necesidades, escribe
               un prompt para el sistema.
             </Text>
-            <InputPrompt hasWand={false} mb="20px" mt="33px" />
+            <chakra.form onSubmit={handleSubmit(onSubmit)}>
+              <InputPrompt
+                hasWand={false}
+                mb="20px"
+                mt="33px"
+                config={{
+                  errors,
+                  isLoading,
+                  name: "prompt",
+                  register,
+                }}
+              />
+            </chakra.form>
           </CardBody>
         </Card>
         <Card className="chat-history">

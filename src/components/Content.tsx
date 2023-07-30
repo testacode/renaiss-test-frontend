@@ -5,16 +5,43 @@ import {
   Button,
   Card,
   CardHeader,
+  chakra,
   Divider,
   Flex,
   Heading,
   Text,
+  useBoolean,
 } from "@chakra-ui/react";
+import { useReducer } from "react";
+import { useForm } from "react-hook-form";
 import { CiCirclePlus } from "react-icons/ci";
 
+import { fakePromise } from "../utils";
 import { InputPrompt } from "./";
 
 const Content = () => {
+  const [isLoading, setIsLoading] = useBoolean();
+  // Initialize app state
+  const initialState = {};
+  const [state, updateState] = useReducer(
+    (prevState, newState) => ({
+      ...prevState,
+      ...newState,
+    }),
+    initialState,
+  );
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    setIsLoading.on();
+    await fakePromise(data);
+    setIsLoading.off();
+  };
+
   return (
     <Box className="content" h="calc(100vh - 70px)" p="32px" w="100%">
       <Card h="100%">
@@ -86,7 +113,17 @@ const Content = () => {
             pt="34px"
             px="25px"
           >
-            <InputPrompt hasWand />
+            <chakra.form flex={1} onSubmit={handleSubmit(onSubmit)}>
+              <InputPrompt
+                hasWand
+                config={{
+                  errors,
+                  isLoading,
+                  name: "chat",
+                  register,
+                }}
+              />
+            </chakra.form>
           </Flex>
         </Flex>
       </Card>
