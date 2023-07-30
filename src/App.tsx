@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client";
 
 import "./App.css";
@@ -10,12 +9,10 @@ import {
   Flex,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useReducer } from "react";
 
 import { Content, Navbar, Sidebar } from "./components";
 
 const App = () => {
-  // @ts-ignore
   const {
     isOpen: isMobileSidebarOpen,
     onOpen: onMobileSidebarOpen,
@@ -26,19 +23,6 @@ const App = () => {
     onOpen: onDesktopSidebarOpen,
     onClose: onDesktopSidebarClose,
   } = useDisclosure({ defaultIsOpen: true });
-  // Initialize app state
-  const initialState = {
-    isNavbarOpen: true,
-  };
-  // @ts-ignore
-  const [state, updateState] = useReducer(
-    // @ts-ignore
-    (prevState, newState) => ({
-      ...prevState,
-      ...newState,
-    }),
-    initialState,
-  );
 
   const config = {
     desktop: {
