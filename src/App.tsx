@@ -1,35 +1,88 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+"use client";
 
-function App() {
-  const [count, setCount] = useState(0)
+import "./App.css";
+
+import {
+  Box,
+  Drawer,
+  DrawerContent,
+  Flex,
+  useDisclosure,
+  useMediaQuery,
+} from "@chakra-ui/react";
+import { useReducer } from "react";
+
+import { Content, Navbar, Sidebar } from "./components";
+
+const App = () => {
+  const [isDesktop] = useMediaQuery("(min-width: 768px)");
+  const {
+    isOpen: isMobileSidebarOpen,
+    onOpen: onMobileSidebarOpen,
+    onClose: onMobileSidebarClose,
+  } = useDisclosure();
+  const {
+    isOpen: isDesktopSidebarOpen,
+    onOpen: onDesktopSidebarOpen,
+    onClose: onDesktopSidebarClose,
+  } = useDisclosure({ defaultIsOpen: true });
+  // Initialize app state
+  const initialState = {
+    isNavbarOpen: true,
+  };
+  const [state, updateState] = useReducer(
+    (prevState, newState) => ({
+      ...prevState,
+      ...newState,
+    }),
+    initialState,
+  );
+
+  const config = {
+    desktop: {
+      isOpen: isDesktopSidebarOpen,
+      onClose: onDesktopSidebarClose,
+      onOpen: onDesktopSidebarOpen,
+    },
+    mobile: {
+      isOpen: isMobileSidebarOpen,
+      onClose: onMobileSidebarClose,
+      onOpen: onMobileSidebarOpen,
+    },
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <Box bg="#F8FAFC" className="app" minH="100vh">
+      {/* Top Navbar */}
+      <Navbar config={config} />
+      <Flex>
+        {/* Desktop Sidebar */}
+        <Sidebar
+          className="sidebar"
+          config={config}
+          display={{
+            base: "none",
+            md: isDesktopSidebarOpen ? "block" : "none",
+          }}
+        />
+        {/* Mobile Sidebar */}
+        <Drawer
+          isOpen={isMobileSidebarOpen}
+          placement="left"
+          returnFocusOnClose={false}
+          size="full"
+          onClose={onMobileSidebarClose}
+          onOverlayClick={onMobileSidebarClose}
+        >
+          <DrawerContent>
+            <Sidebar className="mobile-sidebar" config={config} />
+          </DrawerContent>
+        </Drawer>
+        {/* Content */}
+        <Content />
+      </Flex>
+    </Box>
+  );
+};
 
-export default App
+export default App;
