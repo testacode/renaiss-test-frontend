@@ -42,7 +42,7 @@ module.exports = {
       "multiline": 'last',
       "reservedFirst": true
     }],
-    "operator-linebreak": ["error", "before"],
+    // "operator-linebreak": ["error", "before"],
     "arrow-body-style": "off",
     "prefer-arrow-callback": "off"
   },
