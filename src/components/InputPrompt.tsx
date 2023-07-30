@@ -10,10 +10,16 @@ import {
 import { LiaTelegram } from "react-icons/lia";
 import { PiMagicWand } from "react-icons/pi";
 
-const InputPrompt = ({ hasWand, ...rest }) => {
+const InputPrompt = ({ hasWand, config, ...rest }) => {
+  const { errors, isLoading, name, register } = config;
   return (
     <InputGroup {...rest}>
-      <Input placeholder="Insertar prompt" type="text" />
+      <Input
+        isDisabled={isLoading}
+        placeholder="Insertar prompt"
+        type="text"
+        {...register(name)}
+      />
       <InputRightElement w="unset">
         <Flex>
           <IconButton
@@ -23,6 +29,7 @@ const InputPrompt = ({ hasWand, ...rest }) => {
             aria-label="enviar prompt"
             color="#F97316"
             icon={<LiaTelegram />}
+            isLoading={isLoading}
             outline="none"
             variant="link"
             onClick={() => console.log("click")}
@@ -35,6 +42,7 @@ const InputPrompt = ({ hasWand, ...rest }) => {
               aria-label="enviar prompt"
               color="#10B981"
               icon={<PiMagicWand />}
+              isLoading={isLoading}
               outline="none"
               variant="link"
               onClick={() => console.log("click")}
