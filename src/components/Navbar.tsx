@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client";
 
 import { Flex, HStack, IconButton, useColorModeValue } from "@chakra-ui/react";
 import { BsLayoutTextSidebar } from "react-icons/bs";
 import { IoSettingsOutline } from "react-icons/io5";
 
-// BsLayoutTextSidebar
 const Navbar = ({ config, ...rest }) => {
   const { desktop, mobile } = config;
   const handleToggleDesktopSidebar = () => {

@@ -19,7 +19,7 @@ import { PiClockCountdownLight, PiTrashSimple } from "react-icons/pi";
 import { InputPrompt } from ".";
 
 const Sidebar = ({ config, ...rest }) => {
-  const { desktop, mobile } = config;
+  const { mobile } = config;
 
   return (
     <Box
@@ -46,7 +46,7 @@ const Sidebar = ({ config, ...rest }) => {
               Para conseguir una respuesta adecuada a tus necesidades, escribe
               un prompt para el sistema.
             </Text>
-            <InputPrompt mb="20px" mt="33px" />
+            <InputPrompt hasWand={false} mb="20px" mt="33px" />
           </CardBody>
         </Card>
         <Card className="chat-history">

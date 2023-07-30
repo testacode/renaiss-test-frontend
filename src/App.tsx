@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client";
 
 import "./App.css";
@@ -8,14 +9,13 @@ import {
   DrawerContent,
   Flex,
   useDisclosure,
-  useMediaQuery,
 } from "@chakra-ui/react";
 import { useReducer } from "react";
 
 import { Content, Navbar, Sidebar } from "./components";
 
 const App = () => {
-  const [isDesktop] = useMediaQuery("(min-width: 768px)");
+  // @ts-ignore
   const {
     isOpen: isMobileSidebarOpen,
     onOpen: onMobileSidebarOpen,
@@ -30,7 +30,9 @@ const App = () => {
   const initialState = {
     isNavbarOpen: true,
   };
+  // @ts-ignore
   const [state, updateState] = useReducer(
+    // @ts-ignore
     (prevState, newState) => ({
       ...prevState,
       ...newState,
