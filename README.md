@@ -1,5 +1,7 @@
 # Renaiss Frontend Test
 
+![My2XT1bxfz](https://github.com/testacode/renaiss-test-frontend/assets/1852080/d9389a42-d6f8-4334-8c90-fa34d6418a35)
+
 You are going to need -> [Figma](https://www.figma.com/file/dTbo3PXPG1rWqeKwp6QZky/Prueba-T%C3%A9cnica?type=design&node-id=0-1&t=3hR3HQvhObuQq7n8-0)
 
 The following chat should be developed with integration to the [Open AI API](https://platform.openai.com/docs/introduction).
