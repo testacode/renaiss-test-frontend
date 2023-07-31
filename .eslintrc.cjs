@@ -44,6 +44,7 @@ module.exports = {
     }],
     // "operator-linebreak": ["error", "before"],
     "arrow-body-style": "off",
-    "prefer-arrow-callback": "off"
+    "prefer-arrow-callback": "off",
+    "react/prop-types": "off"
   },
 };
