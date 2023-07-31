@@ -36,6 +36,7 @@ const Sidebar = ({ onClose, ...rest }) => {
   const handleOnDelete = (id) => api.onDeleteConversation(id);
   const handleOnSelect = (conversation) =>
     api.setSelectedConversation(conversation);
+  const isConversationSelected = (id) => state?.selected?.id === id;
 
   const onSubmit = async (data) => {
     setIsLoading.on();
@@ -91,6 +92,7 @@ const Sidebar = ({ onClose, ...rest }) => {
         </Card>
         <ChatHistory
           conversations={state.conversations}
+          isSelected={isConversationSelected}
           onDelete={handleOnDelete}
           onSelect={handleOnSelect}
         />
@@ -107,17 +109,28 @@ const Sidebar = ({ onClose, ...rest }) => {
   );
 };
 
-const ChatHistoryItem = ({ conversation, onDelete, onSelect }) => {
+const ChatHistoryItem = ({
+  conversation,
+  isSelected,
+  onDelete,
+  onSelect,
+  ...rest
+}) => {
   const handleDelete = () => onDelete(conversation.id);
   const handleSelect = () => onSelect(conversation);
 
   return (
     <Flex
+      _hover={{ bg: "#FFEDD5" }}
+      bg={isSelected(conversation.id) && "#FFEDD5"}
       className="chat-history-single"
       cursor="pointer"
       justify="space-between"
+      p={4}
+      rounded="md"
       w="full"
       onClick={handleSelect}
+      {...rest}
     >
       <Flex align="center" overflow="hidden">
         <Circle bg="#FDBA74" color="white" mr="13px" size="35px">
@@ -162,11 +175,17 @@ const ChatHistoryItem = ({ conversation, onDelete, onSelect }) => {
   );
 };
 
-const ChatHistory = ({ conversations, onDelete, onSelect }) => {
+const ChatHistory = ({
+  conversations,
+  isSelected,
+  onDelete,
+  onSelect,
+  ...rest
+}) => {
   const hasConversations = conversations?.length > 0;
 
   return (
-    <Card className="chat-history">
+    <Card className="chat-history" {...rest}>
       <CardBody>
         <Heading as="h3" mb="10px" size="md">
           Historial de Búsquedas
@@ -180,6 +199,7 @@ const ChatHistory = ({ conversations, onDelete, onSelect }) => {
                 <ChatHistoryItem
                   key={conversation.id}
                   conversation={conversation}
+                  isSelected={isSelected}
                   onDelete={onDelete}
                   onSelect={onSelect}
                 />

@@ -133,6 +133,7 @@ const App = () => {
             <DrawerContent>
               <Sidebar
                 className="mobile-sidebar"
+                overflow="scroll"
                 onClose={onMobileSidebarClose}
               />
             </DrawerContent>
