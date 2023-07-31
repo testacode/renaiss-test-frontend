@@ -15,7 +15,9 @@ const InputPrompt = ({ hasWand, config, ...rest }) => {
   return (
     <InputGroup {...rest}>
       <Input
+        errorBorderColor="crimson"
         isDisabled={isLoading}
+        isInvalid={!!errors[name]}
         placeholder="Insertar prompt"
         type="text"
         {...register(name)}
@@ -42,7 +44,7 @@ const InputPrompt = ({ hasWand, config, ...rest }) => {
               aria-label="enviar prompt"
               color="#10B981"
               icon={<PiMagicWand />}
-              isLoading={isLoading}
+              isDisabled={isLoading}
               outline="none"
               variant="link"
               onClick={() => console.log("click")}

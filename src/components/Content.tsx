@@ -6,41 +6,43 @@ import {
   Card,
   CardHeader,
   chakra,
-  Divider,
   Flex,
   Heading,
-  Text,
   useBoolean,
 } from "@chakra-ui/react";
-import { useReducer } from "react";
+import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { CiCirclePlus } from "react-icons/ci";
 
-import { fakePromise } from "../utils";
-import { InputPrompt } from "./";
+import { ChatContext } from "../context";
+import { Chat, InputPrompt } from "./";
 
 const Content = () => {
   const [isLoading, setIsLoading] = useBoolean();
-  // Initialize app state
-  const initialState = {};
-  const [state, updateState] = useReducer(
-    (prevState, newState) => ({
-      ...prevState,
-      ...newState,
-    }),
-    initialState,
-  );
+  const { api, state } = useContext(ChatContext);
+  // Form initialization
   const {
     register,
+    reset,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitSuccessful },
   } = useForm();
-
+  // On Form submittion
   const onSubmit = async (data) => {
     setIsLoading.on();
-    await fakePromise(data);
+    api.onAddDialog(state.selected.id, data.chat, "Human");
     setIsLoading.off();
   };
+  const handleCreateConversation = () => api.onCreateConversation("");
+  const hasSelectedConversation = !!state?.selected;
+  const hasSelectedMessages = state?.selected?.messages?.length;
+  const showMessages = hasSelectedConversation && hasSelectedMessages;
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({ chat: "" });
+    }
+  }, [isSubmitSuccessful, reset]);
 
   return (
     <Box className="content" h="calc(100vh - 70px)" p="32px" w="100%">
@@ -54,7 +56,7 @@ const Content = () => {
               textOverflow="ellipsis"
               whiteSpace="nowrap"
             >
-              OdamaChat
+              {state?.selected?.name || ""}
             </Heading>
             <Button
               bg="#F97316"
@@ -62,6 +64,7 @@ const Content = () => {
               leftIcon={<CiCirclePlus />}
               minW="160px"
               size="sm"
+              onClick={handleCreateConversation}
             >
               Nueva Búsqueda
             </Button>
@@ -76,33 +79,18 @@ const Content = () => {
             overflow="hidden"
             p={6}
           >
-            <Card p="24px 28px" w="100%">
-              <Flex direction="column">
-                <Flex align="baseline" gap="12px" mb="12px">
-                  <Text color="green" fontWeight="bold">
-                    Ana Clara
-                  </Text>
-                  <Text color="#94A3B8" fontSize="xs">
-                    05:00pm
-                  </Text>
-                </Flex>
-                <Divider />
-                <Flex mt="14px">
-                  <Text fontSize="sm">
-                    Necesito los archivos que te pedí ayer
-                  </Text>
-                </Flex>
-              </Flex>
-            </Card>
-            <Card p="24px 28px" w="100%">
-              <Flex direction="column">
-                <Flex align="baseline" gap="12px">
-                  <Text className="loading" color="orange" fontWeight="bold">
-                    OdamaChat
-                  </Text>
-                </Flex>
-              </Flex>
-            </Card>
+            {showMessages &&
+              state.selected.messages.map((message, i) => {
+                if (!message.content) return null;
+
+                return (
+                  <Chat
+                    key={i}
+                    message={message.content}
+                    who={message.author}
+                  />
+                );
+              })}
           </Flex>
           <Flex
             bg="white"

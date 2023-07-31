@@ -15,27 +15,39 @@ import {
   Text,
   useBoolean,
 } from "@chakra-ui/react";
+import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { FiSearch } from "react-icons/fi";
 import { PiClockCountdownLight, PiTrashSimple } from "react-icons/pi";
 
-import { fakePromise } from "../utils";
+import { ChatContext } from "../context";
 import { InputPrompt } from ".";
 
-const Sidebar = ({ config, ...rest }) => {
-  const { mobile } = config;
+const Sidebar = ({ onClose, ...rest }) => {
   const [isLoading, setIsLoading] = useBoolean();
+  const { api, state } = useContext(ChatContext);
   const {
     register,
+    reset,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitSuccessful },
   } = useForm();
+
+  const handleOnDelete = (id) => api.onDeleteConversation(id);
+  const handleOnSelect = (conversation) =>
+    api.setSelectedConversation(conversation);
 
   const onSubmit = async (data) => {
     setIsLoading.on();
-    await fakePromise(data);
+    await api.onCreateConversation(data.prompt);
     setIsLoading.off();
   };
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({ prompt: "" });
+    }
+  }, [isSubmitSuccessful, reset]);
 
   return (
     <Box
@@ -77,71 +89,105 @@ const Sidebar = ({ config, ...rest }) => {
             </chakra.form>
           </CardBody>
         </Card>
-        <Card className="chat-history">
-          <CardBody>
-            <Heading as="h3" mb="10px" size="md">
-              Historial de Búsquedas
-            </Heading>
-            <Divider mb="18px" />
-            <Flex className="chat-history-list">
-              <Flex
-                className="chat-history-single"
-                justify="space-between"
-                w="full"
-              >
-                <Flex align="center" overflow="hidden">
-                  <Circle bg="#FDBA74" color="white" mr="13px" size="35px">
-                    <Icon as={FiSearch} />
-                  </Circle>
-                  <Flex
-                    direction="column"
-                    lineHeight="18px"
-                    overflow="hidden"
-                    pr="14px"
-                    textOverflow="ellipsis"
-                    whiteSpace="nowrap"
-                  >
-                    <Text
-                      display="inline-block"
-                      fontSize="16px"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                      whiteSpace="nowrap"
-                    >
-                      User Flow con un texto muy largo para ver si funciona el
-                      overflow
-                    </Text>
-                    <Flex
-                      align="center"
-                      as={Text}
-                      color="#94A3B8"
-                      fontSize="13px"
-                      gap="2px"
-                    >
-                      <Icon as={PiClockCountdownLight} />
-                      Hoy, quedan 24 hs.
-                    </Flex>
-                  </Flex>
-                </Flex>
-                <IconButton
-                  aria-label="delete"
-                  icon={<PiTrashSimple />}
-                  variant="link"
-                />
-              </Flex>
-            </Flex>
-          </CardBody>
-        </Card>
+        <ChatHistory
+          conversations={state.conversations}
+          onDelete={handleOnDelete}
+          onSelect={handleOnSelect}
+        />
         <Button
           alignSelf="end"
           aria-label="close sidebar"
           display={{ base: "flex", md: "none" }}
-          onClick={mobile.onClose}
+          onClick={onClose}
         >
           Cerrar
         </Button>
       </Flex>
     </Box>
+  );
+};
+
+const ChatHistoryItem = ({ conversation, onDelete, onSelect }) => {
+  const handleDelete = () => onDelete(conversation.id);
+  const handleSelect = () => onSelect(conversation);
+
+  return (
+    <Flex
+      className="chat-history-single"
+      cursor="pointer"
+      justify="space-between"
+      w="full"
+      onClick={handleSelect}
+    >
+      <Flex align="center" overflow="hidden">
+        <Circle bg="#FDBA74" color="white" mr="13px" size="35px">
+          <Icon as={FiSearch} />
+        </Circle>
+        <Flex
+          direction="column"
+          lineHeight="18px"
+          overflow="hidden"
+          pr="14px"
+          textOverflow="ellipsis"
+          whiteSpace="nowrap"
+        >
+          <Text
+            display="inline-block"
+            fontSize="16px"
+            overflow="hidden"
+            textOverflow="ellipsis"
+            whiteSpace="nowrap"
+          >
+            {conversation?.name || "-"}
+          </Text>
+          <Flex
+            align="center"
+            as={Text}
+            color="#94A3B8"
+            fontSize="13px"
+            gap="2px"
+          >
+            <Icon as={PiClockCountdownLight} />
+            {conversation?.time || "-"}
+          </Flex>
+        </Flex>
+      </Flex>
+      <IconButton
+        aria-label="delete"
+        icon={<PiTrashSimple />}
+        variant="link"
+        onClick={handleDelete}
+      />
+    </Flex>
+  );
+};
+
+const ChatHistory = ({ conversations, onDelete, onSelect }) => {
+  const hasConversations = conversations?.length > 0;
+
+  return (
+    <Card className="chat-history">
+      <CardBody>
+        <Heading as="h3" mb="10px" size="md">
+          Historial de Búsquedas
+        </Heading>
+        <Divider mb="18px" />
+        <Flex className="chat-history-list" direction="column" gap="20px">
+          {!hasConversations && <Text>Sin historial</Text>}
+          {hasConversations &&
+            conversations.map((conversation) => {
+              return (
+                <ChatHistoryItem
+                  key={conversation.id}
+                  conversation={conversation}
+                  onDelete={onDelete}
+                  onSelect={onSelect}
+                />
+              );
+            })}
+        </Flex>
+      </CardBody>
+    </Card>
   );
 };
 

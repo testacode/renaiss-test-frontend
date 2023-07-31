@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client";
 
 import { Flex, HStack, IconButton, useColorModeValue } from "@chakra-ui/react";
@@ -7,15 +6,16 @@ import { IoSettingsOutline } from "react-icons/io5";
 
 const Navbar = ({ config, ...rest }) => {
   const { desktop, mobile } = config;
+  // Handle toggle desktop sidebar
   const handleToggleDesktopSidebar = () => {
-    console.log("click desktop", desktop);
     desktop.isOpen ? desktop.onClose() : desktop.onOpen();
   };
 
+  // Handle toggle mobile sidebar
   const handleToggleMobileSidebar = () => {
-    console.log("click mobile", mobile);
     mobile.isOpen ? mobile.onClose() : mobile.onOpen();
   };
+
   return (
     <Flex
       alignItems="center"
